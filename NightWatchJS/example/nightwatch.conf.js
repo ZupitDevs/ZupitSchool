@@ -46,7 +46,7 @@ var config = {
             },
             "output_folder": false
         },
-        "chrome": {
+        "firefox": {
             "webdriver": {
                 "default_path_prefix": "",
                 "port": 4444,
