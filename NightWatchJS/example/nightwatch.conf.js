@@ -34,7 +34,7 @@ var config = {
                 "browserName": "chrome",
                 "chromeOptions": {
                     "args": [
-                        "window-size=1024,768",
+                        "window-size=1920,1080",
                         "no-sandbox"
                     ],
                 },
@@ -58,7 +58,7 @@ var config = {
                 "acceptInsecureCerts": true,
                 "alwaysMatch": {
                     "moz:firefoxOptions": {
-                        "args": [ "--width=1024", "--height=768"]
+                        "args": [ "--width=1920", "--height=1080"]
                     }
                 }
             },
@@ -73,8 +73,8 @@ var config = {
                 "alwaysMatch": {
                     "moz:firefoxOptions": {
                         "args": [ "-headless",
-                                  "--width=1024",
-                                  "--height=768"]
+                                  "--width=1920",
+                                  "--height=1080"]
                     }
                 }
             }
@@ -93,7 +93,7 @@ var config = {
                 "chromeOptions": {
                     "args": [
                         "headless",
-                        "window-size=1024,768",
+                        "window-size=1920,1080",
                         "no-sandbox"
                     ],
                 },
