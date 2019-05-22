@@ -8,6 +8,7 @@ var config = {
     "src_folders": [
         "./tests"
     ],
+    "custom_commands_path": ["./commands"],
     "output_folder": "./reports",
     "disable_colors": false,
     "test_workers": false,
