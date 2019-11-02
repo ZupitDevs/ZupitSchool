@@ -86,3 +86,23 @@ Il codice e' pronto per una release
 #### `fix-production` Bugfix di emergenza in produzione
 
 Un problema in produzione da risolvere velocemente
+
+## Creazione nuovi case
+
+1. da src/, eseguire ./unzip
+
+2. da src/generator/, eseguire:
+
+    $ ./start example-name "Example description"
+
+3. Preparare l'esercizio, da src/generator/exercises/example-name/ La
+   cartella local e' quella su cui verra' svolto l'esercizio alla
+   fine. tmp_* sono cloni del repository per simulare altre utenze
+
+4. da src/generator/, eseguire:
+
+    $ ./deploy example-name
+
+5. Ricordarsi di rigenerare lo zip prima di committare. Da src/, eseguire ./zip
+
+6. committare e pushare
