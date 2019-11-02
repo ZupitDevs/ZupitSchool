@@ -1,0 +1,14 @@
+#!/bin/bash
+(
+    cd ../src/
+    unzip -qo data.zip
+)
+
+rm -rf "$1"
+cp -r "../src/exercises/$1" .
+echo ""
+echo ""
+cat "$1/README"
+echo ""
+echo ""
+echo "Go to $1/local to start"

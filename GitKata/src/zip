@@ -1,0 +1,2 @@
+#!/bin/bash
+zip -rq data.zip exercises generator
