@@ -34,11 +34,31 @@ all'ultima versione
 Classico caso: ho lavorato a delle modifiche e nel frattempo il mio
 branch locale e' rimasto indietro rispetto al remote.
 
+#### `stash-changes` Ho delle modifiche locali ma devo fare altro
+
+Ho delle modifiche locali, non sono pronte per un commit ma il cliente mi ha chiesto di fare altro. Salva temporaneamente le modifiche e lavora su un repository pulito
+
+### Show differences
+
+#### `show-local-changes` Voglio visualizzare le mie modifiche locali
+
+Ho delle modifiche locali e voglio vederle
+
+#### `show-commit-changes` Voglio vedere le modifiche introdotte da un singolo commit
+
 ### Restore local state
 
 #### `undo-local-changes` Voglio annullare le mie modifiche locali
 
 Ho fatto delle modifiche ma ho fatto solo casino e non ho concluso nulla.. Voglio ripartire da zero
+
+#### `revert-to-remote` Voglio che il mio repository locale sia uguale a quello remote.
+
+Localmente ho un casino.. che e' successo? Riportiamoci alla situazione di remote, dove funziona tutto
+
+#### `cleanup` Ho un casino nel mio repository.. facciamo pulizia!
+
+Ho un sacco di file generati, file copiati, file salvati dal web.. Facciamo pulizia
 
 ### I need something from somewhere
 
@@ -55,6 +75,12 @@ Ci sono delle modifiche in un commit che mi servono assolutamente
 #### `update-master-with-branch` Voglio portare le modifiche del mio branch su master
 
 Ho finito con le mie modifiche, tempo di "rilasciare"!
+
+#### `rebase-push-problem` Ho un branch su cui ho fatto rebase, ho pushato e mi da errori
+
+Un problema classico quando si lavora con i rebase. Ho un branch che
+ho gia' pushato, ho fatto rebase da master per alcune modifiche e
+quando voglio pushare il branch ottengo un errore.
 
 ### I've made a mistake!
 
@@ -76,6 +102,10 @@ sbagliato, o ho proprio sbagliato tutto..
 
 Il cliente dice che quella modifica va tolta, o ho rotto la build in
 qualche modo.. annullare il commit sul remote
+
+#### `commit-not-in-branch` Ho fatto un commit su master ma avrei dovuto farlo su un nuovo branch
+
+Ho committato su master anziche' in un nuovo branch.. capita, usciamone velocemente
 
 ### Releases
 
