@@ -1,30 +1,82 @@
 # SQL SERVER 
 
-From da sql server backup file obtain a running sql server on localhost 1433 port with restored data .
+From a sql server backup file obtain a running sql server on localhost 1434 port with restored data .
+
+For WSL Windows Subsystem Linux see one this steps :
+ * [less secure approach](https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4) 
+or 
+* [less easy approach](https://devblogs.microsoft.com/commandline/cross-post-wsl-interoperability-with-docker/) 
+
+before continuing. 
 
 
-## Create source database
+According to OS host go to sub folder
+
+```
+cd windows 
+```
+
+or 
+
+```
+cd linux 
+```
 
 
-### Windows Enviroment
+## Create source database ( optional )
 
-0. Preparation  :
+### Generate Sql Server Backup file
 
-In powershell : 
+#### In powershell : 
 
-.\create-sql-server.ps1 testSource userDatabase
+```powershell
+powershell .\create-sql-server.ps1 testSource userDatabase
 
-.\extractBackup.ps1 testSource userDatabase
+powershell .\extractBackup.ps1 testSource userDatabase
+```
 
-In data  folder  now you'll find userDatabase_LogBackup.bak
+#### In bash : 
 
-2. Execise 
+```bash
+bash create-sql-server.bash testSource userDatabase
 
-Check if no 
-
-docker ps 
-
+bash extractBackup.bash testSource userDatabase
+```
 
 
-Create a docker mac
+In data folder is created userdb_LogBackup.bak file.
 
+
+## Exercise
+
+
+1. Create a sql server container lisenting on port 1434 of localhost
+
+```
+docker run -e ACCEPT_EULA=Y -e SA_PASSWORD=YOURStrongpassowrd123   -p 1434:1433 --name NewSqlServer -d mcr.microsoft.com/mssql/server:2017-latest
+```
+
+2. Optional : configure sql server ( add new login)
+
+```
+docker exec -it NewSqlServer /opt/mssql-tools/bin/sqlcmd  -S localhost -U SA -P YOURStrongpassowrd123   -Q "   CREATE LOGIN <databaseLogin> WITH Password ='<databaseLoginPassword>'; "
+```
+
+3. Restore backup  to new container
+
+```
+cd data
+docker cp  <database_LogBackup.bak> "<container_name>:/tmp/db.bak>"
+ 
+docker exec -it NewSqlServer  /opt/mssql-tools/bin/sqlcmd  -S localhost -U SA -P YOURStrongpassowrd123 -Q "RESTORE DATABASE db1 from disk = '/tmp/db.bak';"
+
+
+```
+
+4. Query database
+
+```
+docker exec -it  <container_name> /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P YOURStrongpassowrd123 -Q " use  db1 ; SELECT * from  users "
+
+
+```
