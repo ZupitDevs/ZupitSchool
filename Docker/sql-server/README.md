@@ -12,13 +12,14 @@ before continuing.
 
 According to OS host go to sub folder
 
-```
+
+```batch
 cd windows 
 ```
 
 or 
 
-```
+```bash
 cd linux 
 ```
 
