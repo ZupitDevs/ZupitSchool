@@ -61,3 +61,7 @@
 - [Luxon](https://moment.github.io/luxon/) (handling date and time)
 - [Autonumeric](http://autonumeric.org/) + [VueAutonumeric](https://github.com/autoNumeric/vue-autoNumeric) + [VueAutonumeric Tweak](https://github.com/autoNumeric/autoNumeric/issues/643)
 - [SortableJS](https://github.com/SortableJS/Sortable)
+
+---
+
+🙏🙏🙏 Please also read and follow [the JS guidelines](https://github.com/ZupitDevs/Guidelines/blob/master/JavaScript/javascript.md) and the [JS frameworks guidelines](https://github.com/ZupitDevs/Guidelines/blob/master/JavaScript/javascript-frameworks.md). 🙏🙏🙏
