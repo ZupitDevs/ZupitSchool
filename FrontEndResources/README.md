@@ -59,3 +59,5 @@
 - [Lodash](https://lodash.com/) (included when creating a Vue project with Vue CLI)
 - [Axios](https://github.com/axios/axios) (Ajax calls) | [Axios CheatSheet](https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index)
 - [Luxon](https://moment.github.io/luxon/) (handling date and time)
+- [Autonumeric](http://autonumeric.org/) + [VueAutonumeric](https://github.com/autoNumeric/vue-autoNumeric) + [VueAutonumeric Tweak](https://github.com/autoNumeric/autoNumeric/issues/643)
+- [SortableJS](https://github.com/SortableJS/Sortable)
