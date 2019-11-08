@@ -37,6 +37,7 @@
 ## Vuex
 - [When Why and How to use Vuex](https://dev.to/napoleon039/when-why-and-how-to-use-vuex-9fl)
 - [Vuex — how to use state](https://medium.com/js-dojo/vuex-2638ba4b1d76)
+- [Vuex CheatSheet](https://vuejs-tips.github.io/vuex-cheatsheet/)
 
 ## Vue.js + TypeScript
 - [Vue CLI 3 + TypeScript: A quick-start guide](https://medium.com/@karl.lee/vue-cli-3-typescript-a-quick-start-guide-324a18859485)
@@ -55,6 +56,6 @@
 
 
 # JS libraries that we (re)used in projects
-- [Lodash](https://lodash.com/) (included when installing Vue with Vue CLI)
-- [Axios](https://github.com/axios/axios) (Ajax calls)
+- [Lodash](https://lodash.com/) (included when creating a Vue project with Vue CLI)
+- [Axios](https://github.com/axios/axios) (Ajax calls) | [Axios CheatSheet](https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index)
 - [Luxon](https://moment.github.io/luxon/) (handling date and time)
