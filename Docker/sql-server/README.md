@@ -51,7 +51,7 @@ In data folder is created userdb_LogBackup.bak file.
 ## Exercise
 
 
-1. Create a sql server container lisenting on port 1434 of localhost
+1. Create a sql server container listenting on port 1434 of localhost
 
 
 <details><summary>See solution</summary>
@@ -64,7 +64,7 @@ docker run -e ACCEPT_EULA=Y -e SA_PASSWORD=YOURStrongpassowrd123   -p 1434:1433 
 </p>
 </details>
 
-2. Optional : configure sql server ( add new login)
+2. Optional : configure sql server with login
 
 <details><summary>See solution</summary>
 <p>
@@ -96,7 +96,7 @@ docker exec -it NewSqlServer  /opt/mssql-tools/bin/sqlcmd  -S localhost -U SA -P
 
 4. Query database
 
-<details><summary>See solution</summary>
+<details><summary>See solution: note some setting on sql server needed to use optional login created</summary>
 <p>
 
 ```
