@@ -53,17 +53,34 @@ In data folder is created userdb_LogBackup.bak file.
 
 1. Create a sql server container lisenting on port 1434 of localhost
 
+
+<details><summary>See solution</summary>
+<p>
+
 ```
 docker run -e ACCEPT_EULA=Y -e SA_PASSWORD=YOURStrongpassowrd123   -p 1434:1433 --name NewSqlServer -d mcr.microsoft.com/mssql/server:2017-latest
 ```
 
+</p>
+</details>
+
 2. Optional : configure sql server ( add new login)
+
+<details><summary>See solution</summary>
+<p>
+
 
 ```
 docker exec -it NewSqlServer /opt/mssql-tools/bin/sqlcmd  -S localhost -U SA -P YOURStrongpassowrd123   -Q "   CREATE LOGIN <databaseLogin> WITH Password ='<databaseLoginPassword>'; "
 ```
 
+</p>
+</details>
+
 3. Restore backup  to new container
+
+<details><summary>See solution</summary>
+<p>
 
 ```
 cd data
@@ -74,10 +91,18 @@ docker exec -it NewSqlServer  /opt/mssql-tools/bin/sqlcmd  -S localhost -U SA -P
 
 ```
 
+</p>
+</details>
+
 4. Query database
+
+<details><summary>See solution</summary>
+<p>
 
 ```
 docker exec -it  <container_name> /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P YOURStrongpassowrd123 -Q " use  db1 ; SELECT * from  users "
-
-
 ```
+
+
+</p>
+</details>
