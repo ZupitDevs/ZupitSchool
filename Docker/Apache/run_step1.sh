@@ -1,4 +1,4 @@
 cd step1
-docker build .
-docker run -p 8000:80 httpd
+docker build -t my_httpd . 
+docker run -p 8000:80 my_httpd
 
