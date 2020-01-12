@@ -117,6 +117,23 @@ Il codice e' pronto per una release
 
 Un problema in produzione da risolvere velocemente
 
+### Multiple remotes
+
+#### `add-new-remote` Aggiungere un nuovo remote al nostro repository
+
+Aggiungere un nuovo remote al nostro repository, tipo quello di Zupit
+per la code review.
+xo
+#### `sync-other-remote` Sincronizzare un remote con un altro
+
+master su origin ha alcune modifiche che non sono sul master dell'altro remote
+
+#### `push-branch-for-review` Pushare un branch per la code review!
+
+Ho finito la mia storia.. voglio aprire una merge request per la code
+review, prima che il cliente possa vedere qualsiasi modifica sul suo
+remote
+
 ## Creazione nuovi case
 
 1. da src/, eseguire ./unzip
