@@ -1,7 +1,6 @@
 <template>
   <v-row>
     <v-col>
-      {{model}}
       <v-form ref="form" v-model="valid" :lazy-validation="lazy" style="width:500px;margin:0 auto">
         <v-text-field v-model="model.name" label="Nome Evento" required :rules="nameRules"></v-text-field>
 
