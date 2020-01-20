@@ -78,7 +78,7 @@
           </v-time-picker>
         </v-dialog>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Salva</v-btn>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="save">Salva</v-btn>
 
         <v-btn color="error" class="mr-4" @click="reset">Annulla</v-btn>
 
@@ -88,6 +88,9 @@
 </template>
 
 <script>
+
+import router from '../router/index'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -113,9 +116,12 @@ export default {
     };
   },
   methods: {
-    validate() {
+    save() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true;
+        axios.post('api/event',this.model).then(ret=>{
+            router.push({name:'dashboard'});
+        });
+
       }
     },
     reset() {

@@ -13,6 +13,8 @@
         :event-overlap-mode="mode"
         :event-overlap-threshold="30"
         :event-color="getEventColor"
+        :start="start"
+        :end="end"
        @change="getEvents"
       ></v-calendar>
     </v-sheet>
@@ -38,7 +40,8 @@ export default {
       ],
       value: '',
       events: [],
-      
+      start:'2020-01-01',
+      end:'2020-01-31'
       
      
     };
@@ -54,7 +57,11 @@ export default {
       }      
   },
   mounted(){
-  
+    if (this.start && this.end){
+  axios.get(`api/events/${this.start}/${this.end}`).then(data=>{
+            this.events=data.data;
+          });
+    }
   }
 
 }

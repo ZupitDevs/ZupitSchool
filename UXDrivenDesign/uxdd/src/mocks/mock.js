@@ -25,6 +25,9 @@ export default {
                 this.get('api/events/:start/:end', (schema, request) => {
                     const events = []
                     const colors = ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'];
+                    /*
+                   
+                  
                     const names = ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'];
                     const min = new Date(`${request.params.start}T00:00:00`)
                     const max = new Date(`${request.params.end}T23:59:59`)
@@ -45,9 +48,34 @@ export default {
                             color: colors[utils.rnd(0, colors.length - 1)],
                         })
                     }
+                    return events;*/
+                    var ret= schema.db.events;
+
+                    for (let i=0;i<schema.db.events.length;i++){
+                        let ev=schema.db.events[i];
+                        var start=new Date(`${ev.start}T${ev.startTime}:00`);
+                        var end=new Date(`${ev.start}T${ev.endTime}:00`);
+                        events.push({
+                            name: `${schema.db.events[i].name}(${schema.db.events[i].author})`,
+                            start: utils.formatDate(start,false),
+                            end: utils.formatDate(end,false),
+                            color: colors[utils.rnd(0, colors.length - 1)],
+                        });
+                    }
                     return events;
                 });
 
+
+                this.post('api/event',function(schema,request){
+                    let event=JSON.parse(request.requestBody);
+                    return schema.db.events.insert(event);
+                });
+
+            },
+            seeds(server){
+                server.db.loadData({
+                    events:[]
+                });
             }
         });
     }
