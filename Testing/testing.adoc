@@ -1,0 +1,58 @@
+:revealjsdir: reveal.js
+:revealjs_theme: solarized
+:source-highlighter: prettify
+:customcss: style.css
+:revealjs_width: 1440
+:revealjs_height: 900
+= Automatic Software Testing
+
+== Tipi di test automatici
+
+* *Unit test*: Test componenti individuali
+* *Integration test*: Test integrazione tra i componenti
+* *Functional test*: Test requisiti funzionali
+* *End to end test*: Test funzionamento del software nel suo insieme
+* *Load testing*: Test di carico sul software
+* *E molti altri..*
+
+[.notes]
+--
+* https://www.atlassian.com/continuous-delivery/software-testing/types-of-software-testing
+* https://www.guru99.com/system-testing.html
+* https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters
+* https://www.toptal.com/services/software-quality-assurance
+* https://www.dotnetcurry.com/visualstudio/1456/integration-testing-sqllocaldb
+* https://enterprisecraftsmanship.com/posts/most-important-tdd-rule/
+* https://enterprisecraftsmanship.com/posts/integration-testing-or-how-to-sleep-well-at-nights/
+--
+== Scope del corso
+
+In questo corso ci focalizzeremo su *unit test* e *integration test*.
+
+== Unit testing
+
+Lo *Unit Testing* é una tecnica per verificare piccole porzioni
+dell'applicativo, in modo indipendente da altre componenti.
+
+[souruce,csharp,role="stretch"]
+----
+[TestMethod]
+public void ActuateLights_MotionDetectedAtNight_TurnsOnTheLight()
+{
+   // Arrange
+    bool turnedOn  = false;
+    Action turnOn  = () => turnedOn = true;
+    Action turnOff = () => turnedOn = false;
+
+    var fakeDate = new DateTime(2015, 12, 31, 23, 59, 59);
+    var controller = new SmartHomeController(new FakeDateTimeProvider(fakeDate));
+
+   // Act
+    controller.ActuateLights(true, turnOn, turnOff);
+
+   // Assert
+    Assert.IsTrue(turnedOn);
+}
+----
+
+== Integration testing
