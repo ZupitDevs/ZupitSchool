@@ -5,9 +5,11 @@
 :revealjs_width: 1440
 :revealjs_height: 900
 = Automatic Software Testing
+Mariotti Alessandro
 
 == Tipi di test automatici
 
+[%step]
 * *Unit test*: Test componenti individuali
 * *Integration test*: Test integrazione tra i componenti
 * *Functional test*: Test requisiti funzionali
@@ -24,16 +26,85 @@
 * https://www.dotnetcurry.com/visualstudio/1456/integration-testing-sqllocaldb
 * https://enterprisecraftsmanship.com/posts/most-important-tdd-rule/
 * https://enterprisecraftsmanship.com/posts/integration-testing-or-how-to-sleep-well-at-nights/
+* https://apiumhub.com/tech-blog-barcelona/top-benefits-of-unit-testing/
 --
 == Scope del corso
 
 In questo corso ci focalizzeremo su *unit test* e *integration test*.
+
+== Vantaggi del testing
+
+[%step]
+* Riduce il numero di bug, anticipando la fase di test
+* Facilita l'aggiunta di nuove features
+* Migliora la qualita' del codice
+* Documenta il codice, fornendo esempi di utilizzo
+* Semplifica il processo di debugging
+* Migliora il design del codice
 
 == Unit testing
 
 Lo *Unit Testing* é una tecnica per verificare piccole porzioni
 dell'applicativo, in modo indipendente da altre componenti.
 
+[souruce,csharp,role="stretch"]
+----
+[TestMethod]
+public void ActuateLights_MotionDetectedAtNight_TurnsOnTheLight()
+{
+     bool turnedOn  = false;
+    Action turnOn  = () => turnedOn = true;
+    Action turnOff = () => turnedOn = false;
+
+    var fakeDate = new DateTime(2015, 12, 31, 23, 59, 59);
+    var controller = new SmartHomeController(new FakeDateTimeProvider(fakeDate));
+
+    controller.ActuateLights(true, turnOn, turnOff);
+
+    Assert.IsTrue(turnedOn);
+}
+----
+
+== Integration testing
+
+Al contrario degli unit test, gli *integration test* verificano
+appunto il corretto funzionamento dell'integrazione di piu' componenti.
+
+[souruce,csharp,role="stretch"]
+----
+[Fact]
+public void CreateCustomer_CreatesCustomerOnDbAndSendsEmail()
+{
+    var emailGateway = new FakeEmailGateway();
+    var controller = new CustomerController(new CustomerRepository(), emailGateway);
+
+    controller.CreateCustomer("John Doe", "john@doe.com", "Some city");
+
+    using (var db = new DB())
+    {
+        Customer customerFromDb = db.GetCustomer("john@doe.com");
+        customerFromDb.ShouldExist()
+            .WithName("John Doe")
+            .WithEmail("john@doe.com")
+            .WithCity("Some city")
+            .WithState(CustomerState.Pending);
+
+        emailGateway
+            .ShouldSendNumberOfEmails(1)
+            .WithEmail("john@doe.com", "Hello regular customer!");
+    }
+}
+----
+
+== Come scrivere i test: AAA
+
+[%step]
+* *Arrange*: Preparazione del test (mock, stub, oggetti, etc..)
+* *Act*: Chiama la funzionalita' da testare
+* *Assert*: Verifica che i valori ritornati o i sideeffects
+     rispecchino il desiderato
+
+== Esempio AAA
 [souruce,csharp,role="stretch"]
 ----
 [TestMethod]
@@ -55,4 +126,12 @@ public void ActuateLights_MotionDetectedAtNight_TurnsOnTheLight()
 }
 ----
 
-== Integration testing
+
+== Come scrivere buoni test
+
+https://dzone.com/articles/10-tips-to-writing-good-unit-tests
+http://pitest.org/
+
+== Come scrivere codice testabile
+
+https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters
