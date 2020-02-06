@@ -47,21 +47,16 @@ In questo corso ci focalizzeremo su *unit test* e *integration test*.
 Lo *Unit Testing* é una tecnica per verificare piccole porzioni
 dell'applicativo, in modo indipendente da altre componenti.
 
-[souruce,csharp,role="stretch"]
+[souruce,csharp]
 ----
 [TestMethod]
-public void ActuateLights_MotionDetectedAtNight_TurnsOnTheLight()
+public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 {
-     bool turnedOn  = false;
-    Action turnOn  = () => turnedOn = true;
-    Action turnOff = () => turnedOn = false;
+    PalindromeDetector detector = new PalindromeDetector();
 
-    var fakeDate = new DateTime(2015, 12, 31, 23, 59, 59);
-    var controller = new SmartHomeController(new FakeDateTimeProvider(fakeDate));
+    bool isPalindrome = detector.IsPalindrome("kayak");
 
-    controller.ActuateLights(true, turnOn, turnOff);
-
-    Assert.IsTrue(turnedOn);
+    Assert.IsTrue(isPalindrome);
 }
 ----
 
@@ -101,37 +96,266 @@ public void CreateCustomer_CreatesCustomerOnDbAndSendsEmail()
 [%step]
 * *Arrange*: Preparazione del test (mock, stub, oggetti, etc..)
 * *Act*: Chiama la funzionalita' da testare
-* *Assert*: Verifica che i valori ritornati o i sideeffects
+* *Assert*: Verifica che i valori ritornati o i side-effects
      rispecchino il desiderato
 
 == Esempio AAA
-[souruce,csharp,role="stretch"]
+[souruce,csharp]
 ----
 [TestMethod]
-public void ActuateLights_MotionDetectedAtNight_TurnsOnTheLight()
+public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 {
-   // Arrange
-    bool turnedOn  = false;
-    Action turnOn  = () => turnedOn = true;
-    Action turnOff = () => turnedOn = false;
+      // Arrange
+      PalindromeDetector detector = new PalindromeDetector();
 
-    var fakeDate = new DateTime(2015, 12, 31, 23, 59, 59);
-    var controller = new SmartHomeController(new FakeDateTimeProvider(fakeDate));
+     // Act
+    bool isPalindrome = detector.IsPalindrome("kayak");
 
-   // Act
-    controller.ActuateLights(true, turnOn, turnOff);
-
-   // Assert
-    Assert.IsTrue(turnedOn);
+    // Assert
+    Assert.IsTrue(isPalindrome);
 }
 ----
 
 
 == Come scrivere buoni test
 
+[%step]
+* Scrivere test corti
+* Scrivere test veloci
+* Scrivere test leggibili
+* Scrivere test deterministici
+* Verificare una sola cosa per test
+* Verificare piu' cose possibili
+* Dare buoni nomi ai test, la lunghezza non importa
+* Rispettare le normali regole di scrittura codice, anche il DRY
+* Evitare l'ereditarieta' e favorire la composizione
+* Non commentare i test se non funzionano
+* Differenziare bene tra unit test e integration test
+
+[.notes]
+--
 https://dzone.com/articles/10-tips-to-writing-good-unit-tests
-http://pitest.org/
+--
 
-== Come scrivere codice testabile
+== Come scrivere codice (unit)testabile
 
+C'e' codice piu' testabile e c'e' codice meno testabile.
+
+Vediamo di capire cosa rende poco testabile i nostri sorgenti per
+evitare di ritrovarci in queste brutte situazioni.
+
+[souruce,csharp,role="stretch"]
+----
+public static string GetTimeOfDay()
+{
+    DateTime time = DateTime.Now;
+    if (time.Hour >= 0 && time.Hour < 6)
+    {
+        return "Night";
+    }
+    if (time.Hour >= 6 && time.Hour < 12)
+    {
+        return "Morning";
+    }
+    if (time.Hour >= 12 && time.Hour < 18)
+    {
+        return "Afternoon";
+    }
+    return "Evening";
+}
+----
+
+
+=== !
+
+Il test corrispondente risulterebbe una cosa simile:
+
+[souruce,csharp]
+----
+[TestMethod]
+public void GetTimeOfDay_At6AM_ReturnsMorning()
+{
+ // Arrange: change system time to 6 AM
+ ????
+
+ // Act
+ string timeOfDay = GetTimeOfDay();
+
+ // Assert
+ Assert.AreEqual("Morning", timeOfDay);
+}
+----
+
+=== !
+
+Il codice infatti viola alcuni principi:
+
+[%step]
+* E' fortemente legato alla sorgente del dato (`DateTime.Now`)
+* Viola il principio di *Responsabilita' Singola* (Single
+  Responsibility Principle)
+* Non e' chiaro cosa faccia il metodo dalla sola segnatura
+* Dipende da uno stato globale mutabile
+
+[.notes]
+--
+It is tightly coupled to the concrete data source. It is not possible
+to reuse this method for processing date and time retrieved from other
+sources, or passed as an argument; the method works only with the date
+and time of the particular machine that executes the code. Tight
+coupling is the primary root of most testability problems.
+
+It violates the Single Responsibility Principle (SRP). The method has
+multiple responsibilities; it consumes the information and also
+processes it. Another indicator of SRP violation is when a single
+class or method has more than one reason to change. From this
+perspective, the GetTimeOfDay() method could be changed either because
+of internal logic adjustments, or because the date and time source
+should be changed.
+
+It lies about the information required to get its job done. Developers
+must read every line of the actual source code to understand what
+hidden inputs are used and where they come from. The method signature
+alone is not enough to understand the method’s behavior.
+
+It is hard to predict and maintain. The behavior of a method that
+depends on a mutable global state cannot be predicted by merely
+reading the source code; it is necessary to take into account its
+current value, along with the whole sequence of events that could have
+changed it earlier. In a real-world application, trying to unravel all
+that stuff becomes a real headache.
+--
+
+=== !
+
+Si possono facilmente risolvere tutti i problemi semplicemente dando in input l'ora:
+
+[souruce,csharp,role="stretch"]
+----
+public static string GetTimeOfDay(DateTime dateTime)
+{
+    if (dateTime.Hour >= 0 && dateTime.Hour < 6)
+    {
+        return "Night";
+    }
+    if (dateTime.Hour >= 6 && dateTime.Hour < 12)
+    {
+        return "Morning";
+    }
+    if (dateTime.Hour >= 12 && dateTime.Hour < 18)
+    {
+        return "Noon";
+    }
+    return "Evening";
+}
+----
+
+=== !
+
+Ed avere infatti un test scritto bene e deterministico.
+
+[souruce,csharp]
+----
+[TestMethod]
+public void GetTimeOfDay_For6AM_ReturnsMorning()
+{
+     // Arrange
+     var datetime = new DateTime(2015, 12, 31, 06, 00, 00);
+
+    // Act
+     string timeOfDay = GetTimeOfDay(datetime);
+
+    // Assert
+    Assert.AreEqual("Morning", timeOfDay);
+}
+----
+
+== Dependency Injection
+
+O ancora meglio, dove possibile usiamo la Dependency Injection
+
+[souruce,csharp,role="stretch"]
+----
+public class TimeOfDayService {
+
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+    public TimeOfDayService(IDateTimeProvider dateTimeProvider)
+    {
+        _dateTimeProvider = dateTimeProvider;
+    }
+
+    public string GetTimeOfDay()
+    {
+        var dateTime = _dateTimeProvider.GetDateTime();
+
+        if (dateTime.Hour >= 0 && dateTime.Hour < 6)
+        {
+            return "Night";
+        }
+        if (dateTime.Hour >= 6 && dateTime.Hour < 12)
+        {
+            return "Morning";
+        }
+           if (dateTime.Hour >= 12 && dateTime.Hour < 18)
+           {
+              return "Noon";
+           }
+           return "Evening";
+    }
+}
+----
+
+=== !
+
+E nei test quindi possiamo usare un mock o una classe di appoggio
+
+[souruce,csharp]
+----
+public class FakeDateTimeProvider : IDateTimeProvider
+{
+    public DateTime ReturnValue { get; set; }
+
+    public DateTime GetDateTime() { return ReturnValue; }
+
+    public FakeDateTimeProvider(DateTime returnValue) { ReturnValue = returnValue; }
+}
+----
+
+=== !
+
+E quindi nel test:
+[souruce,csharp]
+----
+[TestMethod]
+public void GetTimeOfDay_For6AM_ReturnsMorning()
+{
+    // Arrange
+    var fakeDateTimeProvider = new FakeDateTimeProvider(new DateTime(2015, 12, 31, 23, 59, 59))
+    var sut = new TimeOfDayService(fakeDateTimeProvider);
+
+    // Act
+     string timeOfDay = sut.GetTimeOfDay(datetime);
+
+    // Assert
+    Assert.AreEqual("Morning", timeOfDay);
+}
+----
+
+
+[.notes]
+--
 https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters
+--
+
+
+== Misurare la qualita' dei test
+
+Mutation testing
+
+[.notes]
+--
+http://pitest.org/
+--
+
+== TDD
