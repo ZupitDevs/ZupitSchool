@@ -1,6 +1,6 @@
 :revealjsdir: reveal.js
 :revealjs_theme: solarized
-:source-highlighter: prettify
+:source-highlighter: highlightjs
 :customcss: style.css
 :revealjs_width: 1440
 :revealjs_height: 900
@@ -37,7 +37,7 @@ In questo corso ci focalizzeremo su *unit test* e *integration test*.
 [%step]
 * Riduce il numero di bug, anticipando la fase di test
 * Facilita l'aggiunta di nuove features
-* Migliora la qualita' del codice
+* Migliora la qualità del codice
 * Documenta il codice, fornendo esempi di utilizzo
 * Semplifica il processo di debugging
 * Migliora il design del codice
@@ -47,7 +47,7 @@ In questo corso ci focalizzeremo su *unit test* e *integration test*.
 Lo *Unit Testing* é una tecnica per verificare piccole porzioni
 dell'applicativo, in modo indipendente da altre componenti.
 
-[souruce,csharp]
+[source,csharp]
 ----
 [TestMethod]
 public void IsPalindrome_ForPalindromeString_ReturnsTrue()
@@ -63,9 +63,9 @@ public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 == Integration testing
 
 Al contrario degli unit test, gli *integration test* verificano
-appunto il corretto funzionamento dell'integrazione di piu' componenti.
+appunto il corretto funzionamento dell'integrazione di più componenti.
 
-[souruce,csharp,role="stretch"]
+[source,csharp,role="stretch"]
 ----
 [Fact]
 public void CreateCustomer_CreatesCustomerOnDbAndSendsEmail()
@@ -95,20 +95,20 @@ public void CreateCustomer_CreatesCustomerOnDbAndSendsEmail()
 
 [%step]
 * *Arrange*: Preparazione del test (mock, stub, oggetti, etc..)
-* *Act*: Chiama la funzionalita' da testare
+* *Act*: Chiama la funzionalità da testare
 * *Assert*: Verifica che i valori ritornati o i side-effects
      rispecchino il desiderato
 
 == Esempio AAA
-[souruce,csharp]
+[source,csharp]
 ----
 [TestMethod]
 public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 {
-      // Arrange
-      PalindromeDetector detector = new PalindromeDetector();
+    // Arrange
+    PalindromeDetector detector = new PalindromeDetector();
 
-     // Act
+    // Act
     bool isPalindrome = detector.IsPalindrome("kayak");
 
     // Assert
@@ -120,31 +120,40 @@ public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 == Come scrivere buoni test
 
 [%step]
-* Scrivere test corti
-* Scrivere test veloci
 * Scrivere test leggibili
-* Scrivere test deterministici
+* Scrivere test *deterministici*
 * Verificare una sola cosa per test
-* Verificare piu' cose possibili
 * Dare buoni nomi ai test, la lunghezza non importa
 * Rispettare le normali regole di scrittura codice, anche il DRY
-* Evitare l'ereditarieta' e favorire la composizione
-* Non commentare i test se non funzionano
+* Evitare l'ereditarietà e favorire la composizione
 * Differenziare bene tra unit test e integration test
+* *Non commentare/ignorare i test se non funzionano*
+
+== Alcune regole speciali per gli unit test
+
+Per gli unit test ci sono alcune regole che non valgono negli
+integration test. Infatti si deve:
+
+* Scrivere test corti
+* Scrivere test veloci da eseguire
+* Verificare parti indipendenti di codice
+* Verificare i casi nominali e dare enfasi sui casi limite,
+  usando il buon senso: La mia logica é veramente così complessa da
+  richiedere tanti test?
 
 [.notes]
 --
 https://dzone.com/articles/10-tips-to-writing-good-unit-tests
 --
 
-== Come scrivere codice (unit)testabile
+== Come scrivere codice testabile
 
-C'e' codice piu' testabile e c'e' codice meno testabile.
+C'é codice più testabile e c'é codice meno testabile.
 
 Vediamo di capire cosa rende poco testabile i nostri sorgenti per
 evitare di ritrovarci in queste brutte situazioni.
 
-[souruce,csharp,role="stretch"]
+[source,csharp,role="stretch"]
 ----
 public static string GetTimeOfDay()
 {
@@ -165,12 +174,11 @@ public static string GetTimeOfDay()
 }
 ----
 
-
 === !
 
 Il test corrispondente risulterebbe una cosa simile:
 
-[souruce,csharp]
+[source,csharp]
 ----
 [TestMethod]
 public void GetTimeOfDay_At6AM_ReturnsMorning()
@@ -191,10 +199,10 @@ public void GetTimeOfDay_At6AM_ReturnsMorning()
 Il codice infatti viola alcuni principi:
 
 [%step]
-* E' fortemente legato alla sorgente del dato (`DateTime.Now`)
-* Viola il principio di *Responsabilita' Singola* (Single
+* É fortemente legato alla sorgente del dato (`DateTime.Now`)
+* Viola il principio di *Responsabilità Singola* (Single
   Responsibility Principle)
-* Non e' chiaro cosa faccia il metodo dalla sola segnatura
+* Non é chiaro cosa faccia il metodo dalla sola segnatura
 * Dipende da uno stato globale mutabile
 
 [.notes]
@@ -230,7 +238,7 @@ that stuff becomes a real headache.
 
 Si possono facilmente risolvere tutti i problemi semplicemente dando in input l'ora:
 
-[souruce,csharp,role="stretch"]
+[source,csharp,role="stretch"]
 ----
 public static string GetTimeOfDay(DateTime dateTime)
 {
@@ -254,7 +262,7 @@ public static string GetTimeOfDay(DateTime dateTime)
 
 Ed avere infatti un test scritto bene e deterministico.
 
-[souruce,csharp]
+[source,csharp]
 ----
 [TestMethod]
 public void GetTimeOfDay_For6AM_ReturnsMorning()
@@ -274,7 +282,7 @@ public void GetTimeOfDay_For6AM_ReturnsMorning()
 
 O ancora meglio, dove possibile usiamo la Dependency Injection
 
-[souruce,csharp,role="stretch"]
+[source,csharp,role="stretch"]
 ----
 public class TimeOfDayService {
 
@@ -293,15 +301,8 @@ public class TimeOfDayService {
         {
             return "Night";
         }
-        if (dateTime.Hour >= 6 && dateTime.Hour < 12)
-        {
-            return "Morning";
-        }
-           if (dateTime.Hour >= 12 && dateTime.Hour < 18)
-           {
-              return "Noon";
-           }
-           return "Evening";
+        [...]
+        return "Evening";
     }
 }
 ----
@@ -310,7 +311,7 @@ public class TimeOfDayService {
 
 E nei test quindi possiamo usare un mock o una classe di appoggio
 
-[souruce,csharp]
+[source,csharp]
 ----
 public class FakeDateTimeProvider : IDateTimeProvider
 {
@@ -325,7 +326,7 @@ public class FakeDateTimeProvider : IDateTimeProvider
 === !
 
 E quindi nel test:
-[souruce,csharp]
+[source,csharp]
 ----
 [TestMethod]
 public void GetTimeOfDay_For6AM_ReturnsMorning()
@@ -335,27 +336,268 @@ public void GetTimeOfDay_For6AM_ReturnsMorning()
     var sut = new TimeOfDayService(fakeDateTimeProvider);
 
     // Act
-     string timeOfDay = sut.GetTimeOfDay(datetime);
+    string timeOfDay = sut.GetTimeOfDay(datetime);
 
     // Assert
     Assert.AreEqual("Morning", timeOfDay);
 }
 ----
 
+== Cosa evitare
+
+* Singletons
+* Metodi impuri statici e variabili statiche o globali
+* Non determinismo
+* Side-effects, funzioni impure
+
+=== Singletons
+
+[source,csharp]
+----
+User GetUser(int userId)
+{
+    User user;
+    if (UserCache.Instance.ContainsKey(userId))
+    {
+        user = UserCache.Instance[userId];
+    }
+    else
+    {
+        user = _userService.LoadUser(userId);
+        UserCache.Instance[userId] = user;
+    }
+    return user;
+}
+----
+
+Questo codice é difficile da testare, poiché due test potrebbero
+avere comportamenti differenti in base all'ordine in cui vengono
+eseguiti, ed é difficile rimuovere la dipendenza dalla `UserCache`
+
+=== Metodi statici, non determinismo
+
+Abbiamo già visto questo caso, ve lo ricordate?
+
+[source,csharp]
+----
+public static string GetTimeOfDay()
+{
+    DateTime time = DateTime.Now;
+    if (time.Hour >= 0 && time.Hour < 6)
+    {
+        return "Night";
+    }
+    if (time.Hour >= 6 && time.Hour < 12)
+    [...]
+}
+----
+
+Invece una funzione statica pura va bene:
+
+[source,csharp]
+----
+double Circumference(double radius) { return 2 * Math.PI * radius; }
+----
+
+== Differenze degli Integration tests
+
+Vediamo ora le differenze degli integration test dagli unit test:
+
+* *Incapsulamento*: Gli unit test non usano risorse esterne, mentre gli
+  integration test richiedono componenti esterne come un DB o la rete.
+* *Complessità*: Gli integration test sono solitamente più complessi
+  da scrivere, poiché richiedono maggiore setup
+* *Scopo*: Gli integration test non dovrebbero verificare la business logic,
+  che va testata con gli unit test, ma solo il corretto funzionamento
+  delle varie parti messe insieme.
+
+== Come scrivere buoni integration tests
+
+* Usare meno mock possibili: stiamo verificando appunto l'integrazione
+  tra varie componenti
+* Non verificare la business logic, ma l'integrazione tra componenti
+* Riutilizzare il più possibile setup di altri test esistenti
+* Usare molto logging (occhio alle performances: usare logging debug,
+  abilitato solo nei test)
+* Dove possibile, usare gli stessi componenti usati in produzione
+  (e.g.: No Database in memoria, ma un TestContainer)
+* Per testare failures (e.g. il mio codice si comporta bene con un
+  errore di connessione o una connessione lenta?) usare librerie
+  adatte (Java: MockWebServer o TestContainers + Toxiproxy)
+
+[.notes]
+--
+* https://techbeacon.com/devops/6-best-practices-integration-testing-continuous-integration
+* https://www.softwaretestinghelp.com/what-is-integration-testing/
+* https://dzone.com/articles/integration-testing-what-it-is-and-how-to-do-it-ri
+* https://phauer.com/2019/focus-integration-tests-mock-based-tests/ !!
+* https://phauer.com/2017/dont-use-in-memory-databases-tests-h2/
+--
+
+=== Caso di esempio
+
+Immaginiamo di avere un'API `/products` che carica dei prodotti da DB,
+richiede informazioni sulle tasse da un servizio esterno ed esegue dei
+calcoli sui costi.
+
+image:assets/example-1-production.svg[Real life example,600]
+
+=== Integration test individuali
+
+Possiamo scrivere degli integration test che verificano ogni singolo
+componente ed una sua integrazione, usando mock.
+
+image:assets/example-2-mock-based-testing.svg[Mock Based Testing,600]
 
 [.notes]
 --
 https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters
+https://bentolor.github.io/java9to13
 --
 
+=== Integration test completo
 
-== Misurare la qualita' dei test
+Oppure possiamo testare di qualcosa più vicino all'ambiente di
+produzione...
 
-Mutation testing
+image:assets/example-3-integration-test.svg[Integration Testing,600]
+
+[.notes]
+--
+
+* Accurate, meaningful and production-close tests. We test all classes
+  and layers together and in the same way as in production. Bugs in
+  the integration of the classes are much more likely to be
+  detected. Thus, we are testing closer to reality and a green test is
+  much more meaningful.
+
+* Robust against refactorings. Integration tests are less likely to
+  break when we do refactorings like extracting code to new methods or
+  classes or changing the internal data structure that is passed
+  around. We are now testing behavior and focusing on the input and
+  output, which should not change after a refactoring of the
+  application’s internals. Besides, integration tests are so powerful
+  because we can immediately see if an internal refactoring broke
+  something. Due to our experience, this is a huge relief.
+
+* One test class to write. Ideally, we get along with a single
+  integration test. Sure, the initial wiring and data creation for
+  integration tests take more effort, but we only have to do it
+  once. However, the world is not black and white. You can still write
+  unit tests in addition to the integration tests. But you might end
+  up testing the same things multiple times.
+
+* Testing against the production database. The tests are even more
+  meaningful because we are testing against the real database in the
+  same version as in production. If a query succeeds in the tests, it
+  will also in production. Moreover, you can use every
+  database-specific feature and test it properly.  Easy setup and
+  execution. Although we are doing integration testing against a real
+  database, the setup is easy, because we can do the complete setup in
+  the test class using Java code. There is no need to deploy the
+  application to a certain staging environment and execute a dedicated
+  test suite against this deployment. Moreover, we execute these
+  integration tests like a normal unit test during the test phase of
+  our build. No special treatment.
+--
+
+== Qualità dei test: Test Coverage
+
+La test coverage ci può dare un'idea sulla qualità del nostri test
+in un progetto. Maggiore é la coverage, migliore é la nostra suite
+di test.
+
+Purtroppo però non riesce a darci un'idea sulla reale efficacia dei
+test: non misura infatti quanti casi sono gestiti.
+
+== Qualità dei test: Mutation testing
+
+Con il mutation testing, delle *mutazioni* randomiche vengono
+introdotte nel codice, e vengono eseguiti i test.
+
+Se un test fallisce, la mutazione é *uccisa*. Se il test passa, la
+mutazione é *sopravvissuta*.
+
+La qualità dei test é misurata dal numero di mutazioni *uccise*.
+
+Esempio Java: http://pitest.org/
 
 [.notes]
 --
 http://pitest.org/
 --
+== Per il futuro: TDD
 
-== TDD
+Nel *Test Driven Development* si scrivono prima i test e poi il codice
+vero e proprio. Il ciclo di sviluppo é diviso in tre fasi:
+
+[%step]
+1. *Fase rossa:* Si scrive un nuovo test per la funzione da
+  sviluppare, che deve fallire, poiché la funzionalità ancora non
+  esiste.
+2. *Fase verde:* Si scrive il minimo di codice possibile per fare
+  funzionare il test.
+3. *Fase grigia:* Si rifattorizza il codice per portarlo ad adeguati
+  standard di qualità.
+
+== Per il futuro: Extreme programming
+
+"L'extreme programming (XP), è una metodologia di sviluppo del
+software che enfatizza la scrittura di codice di qualità e la rapidità
+di risposta ai cambiamenti di requisiti. Appartiene alla famiglia
+delle metodologie agili, e come tale prescrive lo sviluppo iterativo e
+incrementale strutturato in brevi cicli di sviluppo."
+
+Wikipedia: https://it.wikipedia.org/wiki/Extreme_programming
+
+[.divide]
+== Le 12 regole dell'XP
+
+[.west]
+[%step]
+* Pair programming
+* Planning game
+* TDD
+* Whole Team
+* Continuous Integration
+* Refactoring
+
+[.east]
+[%step]
+* Small Releases
+* Coding Standards
+* Collective code ownership
+* Simple design
+* System metaphor
+* Sustainable pace
+
+[.notes]
+--
+Feedback a scala fine
+
+    Pair programming - Due programmatori lavorano insieme su una sola workstation, il driver è colui che scrive il codice mentre il navigator ragiona sull'approccio e pensa se può funzionare. Questo rende il codice prodotto di migliore qualità. I due programmatori devono avere la stessa esperienza.
+    Planning Game - è una riunione di pianificazione che avviene una volta per iterazione, tipicamente una volta a settimana.
+    Test driven development - i test automatici (sia unitari che di accettazione) vengono scritti prima di scrivere il codice.
+    Whole Team - in XP, il "cliente" non è colui che paga il conto, ma la persona che realmente utilizza il sistema. Il cliente deve essere presente e disponibile a verificare (sono consigliate riunioni settimanali o Jour fixe).
+
+Processo continuo
+
+    Integrazione continua - Integrare continuamente i cambiamenti al codice eviterà ritardi più avanti nel ciclo del progetto, causati da problemi d'integrazione.
+    Refactoring o Design Improvement - riscrivere il codice senza alterarne le funzionalità esterne, cambiando l'architettura, in modo da renderlo più semplice e generico.
+    Small Releases - consegna del software avviene tramite frequenti rilasci di funzionalità che creano del valore concreto.
+
+Comprensione condivisa
+
+    Coding standards - Scegliere ed utilizzare un preciso standard di scrittura del codice. Questo rappresenta un insieme di regole concordate, che l'intero team di sviluppo accetta di rispettare nel corso del progetto.
+    Collective code ownership - significa che ognuno è responsabile di tutto il codice; quindi contribuisce alla stesura chiunque sia coinvolto nel progetto.
+    Simple design - i programmatori dovrebbero utilizzare un approccio del tipo "semplice è meglio" alla progettazione software. Progettare al minimo e con il cliente.
+    System metaphor - descrivere il sistema con una metafora, anche per la descrizione formale. Questa può essere considerata come una storia che ognuno - clienti, programmatori, e manager - può raccontare circa il funzionamento del sistema.
+
+Benessere dei programmatori
+
+    Sustainable pace - il concetto è che i programmatori o gli sviluppatori software non dovrebbero lavorare più di 40 ore a settimana.
+--
+
+== Un'ultima cosa...
+
+*I TEST VANNO ESEGUITI!*
