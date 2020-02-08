@@ -406,6 +406,7 @@ double Circumference(double radius) { return 2 * Math.PI * radius; }
 
 Vediamo ora le differenze degli integration test dagli unit test:
 
+[%step]
 * *Incapsulamento*: Gli unit test non usano risorse esterne, mentre gli
   integration test richiedono componenti esterne come un DB o la rete.
 * *Complessità*: Gli integration test sono solitamente più complessi
@@ -416,6 +417,7 @@ Vediamo ora le differenze degli integration test dagli unit test:
 
 == Come scrivere buoni integration tests
 
+[%step]
 * Usare meno mock possibili: stiamo verificando appunto l'integrazione
   tra varie componenti
 * Non verificare la business logic, ma l'integrazione tra componenti
