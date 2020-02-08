@@ -4,6 +4,9 @@
 :customcss: style.css
 :revealjs_width: 1440
 :revealjs_height: 900
+:revealjs_slideNumber: true
+//:revealjs_history: true
+
 = Automatic Software Testing
 Mariotti Alessandro
 
