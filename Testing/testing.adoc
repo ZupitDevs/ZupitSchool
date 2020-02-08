@@ -1,5 +1,5 @@
 :revealjsdir: reveal.js
-:revealjs_theme: solarized
+:revealjs_theme: moon
 :source-highlighter: highlightjs
 :customcss: style.css
 :revealjs_width: 1440
@@ -267,11 +267,11 @@ Ed avere infatti un test scritto bene e deterministico.
 [TestMethod]
 public void GetTimeOfDay_For6AM_ReturnsMorning()
 {
-     // Arrange
-     var datetime = new DateTime(2015, 12, 31, 06, 00, 00);
+    // Arrange
+    var datetime = new DateTime(2015, 12, 31, 06, 00, 00);
 
     // Act
-     string timeOfDay = GetTimeOfDay(datetime);
+    string timeOfDay = GetTimeOfDay(datetime);
 
     // Assert
     Assert.AreEqual("Morning", timeOfDay);
