@@ -43,7 +43,118 @@ In questo corso ci focalizzeremo su *unit test* e *integration test*.
 * Migliora la qualità del codice
 * Documenta il codice, fornendo esempi di utilizzo
 * Semplifica il processo di debugging
-* Migliora il design del codice
+
+== Alcuni concetti base: SUT
+
+*SUT* Sta per System Under Test, ovvero il componente che vuole
+ verificare in un test.
+
+== Alcuni concetti base: Stub
+
+Uno stub é una implementazione "stupida" di un'interfaccia, creata ai
+soli fini del testing.
+
+Immaginiamo di avere la seguente classe:
+
+[source,csharp]
+----
+    public class ExtensionManager : IExtensionManager
+    {
+        public bool CheckExtension(string FileName)
+        {
+                // [...]  Un sacco di logica complessa
+        }
+        public List<Person> getPersons()
+        {
+                // [...]  Un sacco di logica complessa
+        }
+    }
+----
+
+=== !
+
+Questo potrebbe essere il suo stub usato nei test di altri componenti
+da esso dipendenti:
+
+[source,csharp]
+----
+    public class StubExtensionManager : IExtensionManager
+    {
+        public bool CheckExtension(string FileName)
+        {
+            return true;
+        }
+
+        public List<Person> getPersons()
+        {
+            var mario = new Person {PersonId = "MAB", Name = "Mario Bianchi"};
+            var marco = new Person {PersonId = "MAR", Name = "Marco Rossi"};
+            return new List<Person>{ mario, marco };
+        }
+    }
+----
+
+== Alcuni concetti base: Mock
+
+Nella programmazione ad oggetti, i *mock* sono oggetti simulati the
+mimano il comportamento di oggetti reali in modo controllato.
+
+[source,csharp]
+----
+// Methods
+var calculator = Substitute.For<ICalculator>();
+calculator.Add(1, 2).Returns(3);
+Assert.AreEqual(calculator.Add(1, 2), 3);
+Assert.AreNotEqual(calculator.Add(3, 6), 3);
+
+// Properties
+calculator.Mode.Returns("DEC");
+Assert.AreEqual(calculator.Mode, "DEC");
+----
+
+=== !
+
+Con i mock possiamo sia simulare una chiamata a metodo, specificando
+per quali valori di input debba essere ritornato il valore di output:
+
+[source,java]
+----
+@Test
+public void test1()  {
+    //  create mock
+    MyClass test = mock(MyClass.class);
+
+    // define return value for method getUniqueId()
+    when(test.getUniqueId(eq(1), eq("Blabla"), any(Integer.class))).thenReturn(43);
+
+    // use mock in test....
+    assertEquals(test.getUniqueId(1, "Blabla", 666), 43);
+}
+----
+
+=== !
+
+Ma possiamo anche verificare che un metodo di una classe venga
+chiamato come ci si aspetti.
+
+[source,java]
+----
+import static org.mockito.Mockito.*;
+
+public class MockitoTest  {
+
+    @Mock
+    MyDatabase databaseMock;
+
+    @Test
+    public void testQuery()  {
+        ClassToTest t  = new ClassToTest(databaseMock);
+        boolean check = t.query("* from t");
+        assertTrue(check);
+        verify(databaseMock, Mockito.times(1)).query("* from t");
+    }
+}
+----
 
 == Unit testing
 
@@ -119,6 +230,51 @@ public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 }
 ----
 
+== [Before|After][Each|All]
+
+In `C#` dovrebbero essere `TestInitialize`, `TestCleanup`,
+`ClassInitialize` e `ClassCleanup`. Dipendentemente dal framework che
+si usa hanno nomi diversi, ma il concetto é lo stesso
+
+Si usano per inizializzare e deinizializzare i test all'inizio e alla
+fine di ogni test o all'inizio e alla fine di ogni suite di test.
+
+=== !
+
+[source,csharp,role="stretch"]
+----
+namespace ZupitTool.Core.Test
+{
+    [TestClass]
+    public class SomeTest
+    {
+        ILogger _log;
+        IWordUtils _wordUtils;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            _log = Mock.Of<ILogger<WordUtils>>();
+            _wordUtils = new WordUtils(_log);
+        }
+
+        [TestMethod]
+        public void Reverse_ShouldBeWordInReverse_IfWordIsValid()
+        {
+            string word = "mountain";
+            string reverseWord = _wordUtils.Reverse(word);
+            reverseWord.ShouldBe("niatnuom");
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            // Optionally dispose or cleanup objects
+            ...
+        }
+    }
+}
+----
 
 == Come scrivere buoni test
 
@@ -126,7 +282,8 @@ public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 * Scrivere test leggibili
 * Scrivere test *deterministici*
 * Verificare una sola cosa per test
-* Dare buoni nomi ai test, la lunghezza non importa
+* Non testare i metodi privati
+* Dare buoni nomi ai test, la lunghezza non importa (MethodName_StateUnderTest_ExpectedBehavior)
 * Rispettare le normali regole di scrittura codice, anche il DRY
 * Evitare l'ereditarietà e favorire la composizione
 * Differenziare bene tra unit test e integration test
@@ -137,6 +294,7 @@ public void IsPalindrome_ForPalindromeString_ReturnsTrue()
 Per gli unit test ci sono alcune regole che non valgono negli
 integration test. Infatti si deve:
 
+[%step]
 * Scrivere test corti
 * Scrivere test veloci da eseguire
 * Verificare parti indipendenti di codice
@@ -348,6 +506,7 @@ public void GetTimeOfDay_For6AM_ReturnsMorning()
 
 == Cosa evitare
 
+[%step]
 * Singletons
 * Metodi impuri statici e variabili statiche o globali
 * Non determinismo
@@ -401,6 +560,57 @@ Invece una funzione statica pura va bene:
 ----
 double Circumference(double radius) { return 2 * Math.PI * radius; }
 ----
+
+
+== Mock vs stub
+
+Mock e stub vengono usati per lo stesso fine: eliminare le dipendenze
+da altri componenti nel testing.
+
+Quando usare uno o l'altro dipende dai casi...
+
+=== Mock
+
+Utile per verificare il contratto tra il *SUT* e le sue dipendenze.
+
+Ad esempio, voglio verificare che alla creazione di un utente, il
+servizio di invio email venga invocato una sola volta, per inviare una
+mail ad un dato indirizzo.
+
+Si usano maggiormente nell' *interaction-based testing*, dove appunto
+si vuole verificare che il *SUT* abbia correttamente invocato certi
+metodi di altri componenti.
+
+=== Stub
+
+Utile quando serve semplicemente creare dell'input da dare al nostro
+*SUT*, o quando non ci interessa verificare il contratto che ha con le
+sue dipendenze.
+
+Ad esempio, nei test voglio usare un DAO in modo che ritorni sempre
+qualche valore (e magari si ricordi anche delle insert che ho fatto,
+usando una mappa).
+
+Si usano maggiormente nello *state-based testing*, dove si verifica
+the il *SUT* abbia prodotto i risultati corretti o che lo stato
+risultante sia quello corretto.
+
+== Mock vs Stub: Riassumendo
+
+* Se stiamo copiando del codice che usa dei *mock* in giro in vari
+  test, forse sarebbe il caso di rifatorizzare ed usare uno *stub*
+  unico.
+
+* Se usiamo i mock solo per fornire dati in input al nostro *SUT*,
+  forse faremmo prima con uno *stub*.
+
+* Se vogliamo verificare che certi metodi vengano chiamati con
+  determinati parametri, o vogliamo rompere i nostri test tirando
+  eccezioni a destra e manca, meglio usare i *mock*
+
+* Per i miei gusti, dare altre regole crea solo più confusione che
+  altro.  Usate il buon senso e l'esperienza.
+
 
 == Differenze degli Integration tests
 
@@ -505,6 +715,21 @@ image:assets/example-3-integration-test.svg[Integration Testing,600]
   integration tests like a normal unit test during the test phase of
   our build. No special treatment.
 --
+
+== Quando eseguire i test
+
+* Gli unit test andrebbero eseguiti spesso, essendo veloci, durante lo
+  sviluppo e su una pipeline al push o comunque prima del merge su
+  branch di sviluppo, e potenzialmente integrati bella build.
+
+* Gli integration test andrebbero eseguiti meno frequentemente, ad
+  esempio prima di committare o pushare, dallo sviluppatore in
+  locale. Inoltre, come per gli unit test, in modo automatico su una
+  pipeline al push o prima del merge su branch di sviluppo.
+
+* Molti suggeriscono anche di eseguire periodicamente i test (e.g. una
+  volta al giorno) per scovare subito nuovi problemi su codice poco
+  mantenuto (e.g. un progetto fermo da 3 mesi).
 
 == Qualità dei test: Test Coverage
 
