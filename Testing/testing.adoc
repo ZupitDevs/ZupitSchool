@@ -497,7 +497,7 @@ public void GetTimeOfDay_For6AM_ReturnsMorning()
     var sut = new TimeOfDayService(fakeDateTimeProvider);
 
     // Act
-    string timeOfDay = sut.GetTimeOfDay(datetime);
+    string timeOfDay = sut.GetTimeOfDay();
 
     // Assert
     Assert.AreEqual("Morning", timeOfDay);
@@ -830,4 +830,4 @@ Benessere dei programmatori
 
 == Un'ultima cosa...
 
-*I TEST VANNO ESEGUITI!*
+*NON IGNORATE UN TEST CHE FALLISCE!*
